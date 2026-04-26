@@ -20,7 +20,10 @@ N = Σ A_k · w_k
 
 where:
 
-w0 = 1 w1 = 20 w2 = 360 w_k = 360 · 20^(k-2)
+w0 = 1 
+w1 = 20 
+w2 = 360 
+w_k = 360 · 20^(k-2)
 
 ---
 
@@ -56,7 +59,17 @@ bash ./maya_benchmark
 
 Validation benchmark over 2,000,000 odd numbers:
 
-Baseline: Miller-Rabin only Prime count: 283145 Time: 0.587613 s  MAYA pipeline: MayaMOD + Miller-Rabin Maya candidates passed to MR: 611413 Prime count: 283145 Time: 0.592562 s  Miller-Rabin calls avoided: 1388587 Miller-Rabin workload reduction: 69.43%
+Baseline: Miller-Rabin only 
+Prime count: 283145 
+Time: 0.587613 s  
+
+MAYA pipeline: MayaMOD + Miller-Rabin 
+Maya candidates passed to MR: 611413 
+Prime count: 283145 
+Time: 0.592562 s  
+
+Miller-Rabin calls avoided: 1388587 
+Miller-Rabin workload reduction: 69.43%
 
 The MAYA pipeline preserved identical prime detection results while avoiding 69.43% of Miller–Rabin calls, with runtime nearly identical to the baseline.
 
