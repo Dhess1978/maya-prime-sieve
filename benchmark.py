@@ -6,11 +6,22 @@ PRIMES = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
 
 
 def classic_candidate(n):
+    if n < 2:
+        return False
+
+    if n == 2:
+        return True
+
     if n % 2 == 0:
         return False
+
     for p in PRIMES:
-        if n % p == 0 and n != p:
+        if n == p:
+            return True
+
+        if n % p == 0:
             return False
+
     return True
 
 
@@ -20,17 +31,21 @@ def run_benchmark(limit):
     # CLASSIC
     start = time.time()
     classic_pass = 0
+
     for n in numbers:
         if classic_candidate(n):
             classic_pass += 1
+
     classic_time = time.time() - start
 
     # MAYA
     start = time.time()
     maya_pass = 0
+
     for n in numbers:
         if maya_candidate(n):
             maya_pass += 1
+
     maya_time = time.time() - start
 
     total = len(numbers)
@@ -49,9 +64,15 @@ def run_benchmark(limit):
     print(f"  Time: {maya_time:.4f}s")
 
     print()
+
+    if classic_pass == maya_pass:
+        print("Validation: OK - both methods passed the same amount")
+    else:
+        print("Validation: WARNING - methods differ")
+
     reduction = 100 * (1 - maya_pass / total)
     print(f"Reduction: {reduction:.2f}% filtered")
 
 
 if __name__ == "__main__":
-    run_benchmark(1_000_000)
+    run_benchmark(4_000_003)
