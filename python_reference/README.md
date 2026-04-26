@@ -1,4 +1,4 @@
-Python Reference Version
+The MayaMOD filter deterministically identifies composite numbers by testing divisibility in a transformed modular weight space, reducing the candidate set for subsequent primality testing.
 
 This folder contains a simple reference implementation of MayaMOD in Python.
 
@@ -10,4 +10,5 @@ In benchmark testing, the Python implementation is approximately 20–30× slowe
 
 For performance benchmarks and practical use, see the C implementation:
 
-`maya_benchmark.c`
+```text
+maya_benchmark.c
