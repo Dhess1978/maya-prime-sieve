@@ -1,11 +1,13 @@
-# Python Reference Version
+Python Reference Version
 
-This folder contains a simple Python reference implementation of MayaMOD.
+This folder contains a simple reference implementation of MayaMOD in Python.
 
-It is intended for readability and validation only.
+It is intended for readability, validation, and educational purposes.
 
-The Python version is not optimized for performance.
+The Python version is not optimized for performance and serves only as a conceptual demonstration.
 
-For performance benchmarks, see the C implementation:
+In benchmark testing, the Python implementation is approximately 20–30× slower than the optimized C version, which is consistent with typical differences between interpreted and compiled languages.
+
+For performance benchmarks and practical use, see the C implementation:
 
 `maya_benchmark.c`
