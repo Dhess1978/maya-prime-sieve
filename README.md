@@ -137,4 +137,5 @@ For detailed benchmark results, scaling behavior, and theoretical background, se
 ## Author
 
 David Hess
-© 2026
+© 2026 
+
