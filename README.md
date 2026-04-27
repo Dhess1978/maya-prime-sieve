@@ -134,6 +134,12 @@ For detailed benchmark results, scaling behavior, and theoretical background, se
 
 ---
 
+## Citation
+
+DOI: https://doi.org/10.5281/zenodo.19807084
+
+---
+
 ## Author
 
 David Hess
