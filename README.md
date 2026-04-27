@@ -8,7 +8,7 @@ A modular pre-sieve for efficient primality testing based on the MayaMOD framewo
 
 MAYA Prime Sieve is a lightweight pre-filter designed to reduce the number of candidates passed to computationally expensive primality tests such as Miller–Rabin.
 
-The method is based on a positional decomposition derived from the Mayan number system.
+The method is based on a positional decomposition inspired by the Mayan number system.
 
 ---
 
@@ -37,6 +37,18 @@ This transforms large-number arithmetic into operations on small modular values.
 
 ---
 
+Optimized Pipeline
+
+The current optimized pipeline combines three stages:
+
+Sequential input → odd numbers → Wheel30030 → MayaMOD → Miller–Rabin
+
+* Wheel30030 removes multiples of small primes (2, 3, 5, 7, 11, 13)
+* MayaMOD filters additional composite numbers using modular projection
+* Miller–Rabin performs final probabilistic validation
+
+---
+
 ## C Benchmark
 
 The main performance implementation is written in C.
@@ -47,39 +59,47 @@ maya_benchmark.c
 
 Compile:
 
-bash gcc -O3 maya_benchmark.c -o maya_benchmark 
+gcc -O3 maya_benchmark.c -o maya_benchmark
 
 Run:
 
-bash ./maya_benchmark 
+./maya_benchmark
 
 ---
 
-## Benchmark Result
+Benchmark Result (10M test)
 
-Validation benchmark over 2,000,000 odd numbers:
+Validation benchmark over ~10,000,000 numbers:
 
-Baseline: Miller-Rabin only 
-Prime count: 283145 
-Time: 0.587613 s  
+Baseline: Miller–Rabin only
+Prime count: 1270606
+Time: 2.954527 s
 
-MAYA pipeline: MayaMOD + Miller-Rabin 
-Maya candidates passed to MR: 611413 
-Prime count: 283145 
-Time: 0.592562 s  
+Pipeline: Wheel30030 + MayaMOD + Miller–Rabin
+Maya candidates passed to MR: 2296119
+Prime count: 1270606
+Time: 2.899830 s
 
-Miller-Rabin calls avoided: 1388587 
-Miller-Rabin workload reduction: 69.43%
-
-The MAYA pipeline preserved identical prime detection results while avoiding 69.43% of Miller–Rabin calls, with runtime nearly identical to the baseline.
+Miller–Rabin calls avoided: 7703881
+Miller–Rabin workload reduction: 77.04%
 
 ---
 
-## Python Reference
+* Preserved identical prime detection results
+* Reduced Miller–Rabin workload by 77.04%
+* Achieved a ~1.85% speed improvement over standalone Miller–Rabin
 
-The Python implementation is included only as a readable reference version.
+---
 
-It is not optimized for performance.
+Python Reference
+
+The Python implementation is included as a readable reference version.
+
+It is not optimized for performance and is intended for:
+
+* validation
+* clarity
+* educational purposes
 
 See:
 
@@ -91,7 +111,7 @@ python_reference/
 
 This method acts as a pre-sieve, not a standalone primality test.
 
-It reduces the number of candidates before applying probabilistic tests.
+It reduces the number of candidates before applying probabilistic tests such as Miller–Rabin.
 
 ---
 
@@ -105,79 +125,5 @@ It only filters composite numbers before final primality testing.
 
 ## Author
 
-David Hess  
-© 2026
-This transforms large-number arithmetic into operations on small modular values.
-
----
-
-## C Benchmark
-
-The main performance implementation is written in C.
-
-File:
-
-text maya_benchmark.c 
-
-Compile:
-
-bash gcc -O3 maya_benchmark.c -o maya_benchmark 
-
-Run:
-
-bash ./maya_benchmark 
-
----
-
-## Benchmark Result
-
-Validation benchmark over 2,000,000 odd numbers:
-
-Baseline: Miller-Rabin only
-Prime count: 283145
-Time: 0.587613 s
-
-MAYA pipeline: MayaMOD + Miller-Rabin
-Maya candidates passed to MR: 611413
-Prime count: 283145
-Time: 0.592562 s
-
-Miller-Rabin calls avoided: 1388587
-Miller-Rabin workload reduction: 69.43%
-
-The MAYA pipeline preserved identical prime detection results while avoiding 69.43% of Miller–Rabin calls, with runtime nearly identical to the baseline.
-
----
-
-## Python Reference
-
-The Python implementation is included only as a readable reference version.
-
-It is not optimized for performance.
-
-See:
-
-text python_reference/ 
-
----
-
-## Purpose
-
-This method acts as a pre-sieve, not a standalone primality test.
-
-It reduces the number of candidates before applying probabilistic tests.
-
----
-
-## Disclaimer
-
-This is not a proof of primality.
-
-It only filters composite numbers before final primality testing.
-
----
-
-## Author
-
-David Hess  
+David Hess
 © 2026
