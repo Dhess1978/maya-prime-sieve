@@ -71,6 +71,10 @@ def maya_projection_coefficients(n):
 
 
 def maya_candidate(n):
+    """
+    Returns False if n is definitely composite.
+    Returns True if n is a candidate and should be verified by Miller-Rabin.
+    """
     if n < 2:
         return False
 
