@@ -1,6 +1,7 @@
 # MAYA Prime Sieve
 
-A modular pre-sieve for efficient primality testing based on the MayaMOD framework.
+
+A modular pre-sieve reducing primality test workload by ~77%.
 
 ---
 
@@ -37,7 +38,7 @@ This transforms large-number arithmetic into operations on small modular values.
 
 ---
 
-Optimized Pipeline
+## Optimized Pipeline
 
 The current optimized pipeline combines three stages:
 
@@ -67,7 +68,7 @@ Run:
 
 ---
 
-Benchmark Result (10M test)
+## Benchmark Result (10M test)
 
 Validation benchmark over ~10,000,000 numbers:
 
@@ -91,7 +92,7 @@ Miller–Rabin workload reduction: 77.04%
 
 ---
 
-Python Reference
+## Python Reference
 
 The Python implementation is included as a readable reference version.
 
@@ -120,6 +121,16 @@ It reduces the number of candidates before applying probabilistic tests such as 
 This is not a proof of primality.
 
 It only filters composite numbers before final primality testing.
+
+---
+
+## Extended Analysis
+
+For detailed benchmark results, scaling behavior, and performance analysis, see:
+
+- [Benchmark Results (10M, 100M)](docs/benchmark.md)
+
+- [Performance Analysis](docs/analysis.md)
 
 ---
 
