@@ -124,13 +124,13 @@ It only filters composite numbers before final primality testing.
 
 ---
 
-## Extended Analysis
+## Extended Documentation
 
-For detailed benchmark results, scaling behavior, and performance analysis, see:
+For detailed benchmark results, scaling behavior, and theoretical background, see:
 
-- [Benchmark Results (10M, 100M)](docs/benchmark.md)
-
-- [Performance Analysis](docs/analysis.md)
+* Benchmark Results (10M, 100M)￼
+* Performance Analysis￼
+* Theory￼
 
 ---
 
