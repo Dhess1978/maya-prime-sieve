@@ -1,136 +1,155 @@
 # MAYA Prime Sieve
 
 
-A modular pre-sieve reducing primality test workload by ~77%.
-
 ---
 
 ## Overview
 
-MAYA Prime Sieve is a lightweight pre-filter designed to reduce the number of candidates passed to computationally expensive primality tests such as Miller–Rabin.
+MAYA Prime Sieve is a modular pre-filter designed to reduce the number of candidates passed to computationally expensive primality tests such as Miller–Rabin.
 
-The method is based on a positional decomposition inspired by the Mayan number system.
-
----
-
-## Core Idea
-
-A number is represented as:
-
-N = Σ A_k · w_k
-
-where:
-
-w0 = 1 
-w1 = 20 
-w2 = 360 
-w_k = 360 · 20^(k-2)
+The method is based on positional decomposition and acts as an optimization layer, not a standalone primality test.
 
 ---
 
-## Modular Transformation
+## Pipeline
 
-Divisibility is computed as:
-
-N mod p = (Σ A_k · (w_k mod p)) mod p
-
-This transforms large-number arithmetic into operations on small modular values.
-
----
-
-## Optimized Pipeline
-
-The current optimized pipeline combines three stages:
-
-Sequential input → odd numbers → Wheel30030 → MayaMOD → Miller–Rabin
-
-* Wheel30030 removes multiples of small primes (2, 3, 5, 7, 11, 13)
-* MayaMOD filters additional composite numbers using modular projection
-* Miller–Rabin performs final probabilistic validation
+odd numbers
+→ Wheel30030
+→ MAYA (lookup)
+→ Miller–Rabin
 
 ---
 
-## C Benchmark
+Key Idea (v2.03)
 
-The main performance implementation is written in C.
+The main improvement in version 2.03:
 
-File:
-
-maya_benchmark.c
-
-Compile:
-
-gcc -O3 maya_benchmark.c -o maya_benchmark
-
-Run:
-
-./maya_benchmark
+runtime computation → precomputed lookup
 
 ---
 
-## Benchmark Result (10M test)
+## Previous form:
 
-Validation benchmark over ~10,000,000 numbers:
-
-Baseline: Miller–Rabin only
-Prime count: 1270606
-Time: 2.954527 s
-
-Pipeline: Wheel30030 + MayaMOD + Miller–Rabin
-Maya candidates passed to MR: 2296119
-Prime count: 1270606
-Time: 2.899830 s
-
-Miller–Rabin calls avoided: 7703881
-Miller–Rabin workload reduction: 77.04%
+pass(n) = Wheel(n) && Maya(n)
 
 ---
 
-* Preserved identical prime detection results
-* Reduced Miller–Rabin workload by 77.04%
-* Achieved a ~1.85% speed improvement over standalone Miller–Rabin
+## Current form:
+
+pass(n) = LOOKUP(index(n))
 
 ---
 
-## Python Reference
+## This reduces decision cost to:
 
-The Python implementation is included as a readable reference version.
+O(1) per number
 
-It is not optimized for performance and is intended for:
+---
 
-* validation
-* clarity
-* educational purposes
+## Results
+## 1000M Test
 
-See:
+* ~77% fewer Miller–Rabin calls
+* ~8% speed improvement vs baseline
+* identical results (0 false negatives)
 
-python_reference/
+---
+
+## Performance Graphs
+
+## Throughput (raw vs smoothed)
+
+Candidate reduction (MAYA vs Miller–Rabin)
+
+---
+
+## Interpretation
+
+* Filtering power remains stable (~77%)
+* Lookup removes the main computational bottleneck
+* Performance improves with scale
+
+---
+
+## Scaling
+
+Range         Result
+10M           ✔ faster
+100M          ✔ stable
+1000M         ✔ scalable
+
+---
+
+## Evolution
+
+## v1.00
+
+* ~77% MR reduction
+* small speedup (~1–2%)
+* limitation: high per-candidate cost
+
+## v2.02
+
+* improved rolling computation
+* still CPU-bound
+
+## v2.03
+
+* lookup-based filtering
+* filter cost reduced below Miller–Rabin
+* confirmed scalability
+
+---
+
+## Current Limitation
+
+The current implementation uses:
+
+O(N) memory
+
+---
+
+## This is not the final architecture.
+
+## Next Steps (v2.04)
+
+Planned improvements:
+
+* modular lookup compression (n % M)
+* layer-aware filtering
+* node-based elimination
+* partial wheel reinforcement (17 / 19)
+
+---
+
+## Design Philosophy
+
+* minimize runtime computation
+* move complexity to precomputation
+* preserve correctness strictly
+* optimize for large-scale inputs
 
 ---
 
 ## Purpose
 
-This method acts as a pre-sieve, not a standalone primality test.
+MAYA Prime Sieve is intended as:
 
-It reduces the number of candidates before applying probabilistic tests such as Miller–Rabin.
+a pre-sieve optimization layer for primality testing pipelines
 
 ---
 
 ## Disclaimer
 
-This is not a proof of primality.
-
-It only filters composite numbers before final primality testing.
+This is not a primality test.
+It does not prove primality.
 
 ---
 
-## Extended Documentation
+## Status
 
-For detailed benchmark results, scaling behavior, and theoretical background, see:
-
-* Benchmark Results (10M, 100M)￼
-* Performance Analysis￼
-* Theory￼
+Active research.
+Next milestone: v2.04
 
 ---
 
