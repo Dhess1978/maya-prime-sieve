@@ -1,13 +1,14 @@
 # MAYA Prime Sieve
 
-
 ---
 
 ## Overview
 
-MAYA Prime Sieve is a modular pre-filter designed to reduce the number of candidates passed to computationally expensive primality tests such as Miller–Rabin.
+MAYA Prime Sieve is a pre-filter designed to reduce the number of candidates passed to computationally expensive primality tests such as Miller–Rabin.
 
-The method is based on positional decomposition and acts as an optimization layer, not a standalone primality test.
+The method is based on positional decomposition and is used as an optimization layer within a primality testing pipeline.
+
+This is not a standalone primality test.
 
 ---
 
@@ -20,19 +21,13 @@ odd numbers
 
 ---
 
-Key Idea (v2.03)
+## Key Idea (v2.03)
 
-The main improvement in version 2.03:
+Version 2.03 replaces runtime computation with a precomputed lookup.
 
-runtime computation → precomputed lookup
-
----
-
-## Previous form:
+Previous form:
 
 pass(n) = Wheel(n) && Maya(n)
-
----
 
 ## Current form:
 
@@ -40,7 +35,7 @@ pass(n) = LOOKUP(index(n))
 
 ---
 
-## This reduces decision cost to:
+## Decision cost:
 
 O(1) per number
 
@@ -49,25 +44,15 @@ O(1) per number
 ## Results
 ## 1000M Test
 
-* ~77% fewer Miller–Rabin calls
-* ~8% speed improvement vs baseline
-* identical results (0 false negatives)
-
----
-
-## Performance Graphs
-
-## Throughput (raw vs smoothed)
-
-Candidate reduction (MAYA vs Miller–Rabin)
-
----
+* ~77% reduction in Miller–Rabin calls
+* ~8% runtime improvement vs baseline
+* identical prime counts (no observed false negatives)
 
 ## Interpretation
 
-* Filtering power remains stable (~77%)
-* Lookup removes the main computational bottleneck
-* Performance improves with scale
+* Reduction remains stable across the full range
+* Lookup removes most of the filter computation cost
+* Performance improves as scale increases
 
 ---
 
@@ -85,8 +70,8 @@ Range         Result
 ## v1.00
 
 * ~77% MR reduction
-* small speedup (~1–2%)
-* limitation: high per-candidate cost
+* small speed improvement (~1–2%)
+* limited by per-candidate computation cost
 
 ## v2.02
 
@@ -96,24 +81,51 @@ Range         Result
 ## v2.03
 
 * lookup-based filtering
-* filter cost reduced below Miller–Rabin
-* confirmed scalability
+* reduced filter cost
+* improved scalability
+
+---
+
+## Benchmark Data
+
+Benchmark datasets (10M / 100M / 1000M) are included in the repository.
+
+### Direct access:
+
+* [10M dataset](data/v2.03-c/10M/)
+* [100M dataset](data/v2.03-c/100M/)
+* [1000M dataset](data/v2.03-c/1000M/)
+
+Each dataset contains:
+
+* progress.csv – intermediate measurements
+* summary.csv – final results
+
+### Example files
+
+- [10M summary](data/v2.03-c/10M/maya_benchmark_2_03_10M_lookup_summary.csv)
+- [100M summary](data/v2.03-c/100M/maya_benchmark_2_03_100M_lookup_summary.csv)
+- [1000M summary](data/v2.03-c/1000M/maya_benchmark_2_03_1000M_lookup_summary.csv)
+
+All benchmark results can be independently verified using the provided datasets.
 
 ---
 
 ## Current Limitation
 
-The current implementation uses:
+The current implementation requires:
 
 O(N) memory
 
----
+Example:
 
-## This is not the final architecture.
+- 100M candidates ≈ 1 GB
+
+---
 
 ## Next Steps (v2.04)
 
-Planned improvements:
+Planned work:
 
 * modular lookup compression (n % M)
 * layer-aware filtering
@@ -122,20 +134,18 @@ Planned improvements:
 
 ---
 
-## Design Philosophy
+## Design Goals
 
-* minimize runtime computation
-* move complexity to precomputation
-* preserve correctness strictly
-* optimize for large-scale inputs
+* reduce runtime computation
+* move work to precomputation
+* preserve correctness
+* scale to large input ranges
 
 ---
 
 ## Purpose
 
-MAYA Prime Sieve is intended as:
-
-a pre-sieve optimization layer for primality testing pipelines
+Pre-filter layer for primality testing pipelines.
 
 ---
 
@@ -148,8 +158,8 @@ It does not prove primality.
 
 ## Status
 
-Active research.
-Next milestone: v2.04
+Active development.
+Next version: v2.04
 
 ---
 
@@ -159,7 +169,7 @@ DOI: https://doi.org/10.5281/zenodo.19807084
 
 ---
 
-## Overview
+## Visualization
 
 ![MAYA 1000M](docs/maya_1000M.png)
 
