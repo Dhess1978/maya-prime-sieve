@@ -159,6 +159,12 @@ DOI: https://doi.org/10.5281/zenodo.19807084
 
 ---
 
+## Overview
+
+![MAYA 1000M](docs/maya_1000M.png)
+
+---
+
 ## Author
 
 David Hess
