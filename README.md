@@ -119,6 +119,25 @@ Final correctness always depends on Miller–Rabin (or equivalent).
 
 ---
 
+## 🧠 Conclusion
+
+MAYA Test Sieve demonstrates that structured, residue-based pre-filtering can significantly reduce the workload of probabilistic primality tests without affecting correctness.
+
+The experiments on a 10B range confirm that:
+
+- large-scale candidate reduction (~77%) is achievable
+- filtering behavior remains stable across implementations
+- performance depends more on execution strategy than on the mathematical filter itself
+
+This highlights an important distinction between:
+
+- **algorithmic design** (filtering quality)
+- **implementation strategy** (runtime efficiency)
+
+The MAYA approach opens a path toward hybrid and hardware-aware filtering systems that can further optimize large-scale prime testing.
+
+---
+
 ## 👤 Author
 
 David Hess  
