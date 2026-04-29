@@ -1,182 +1,125 @@
-# MAYA Prime Sieve
+# MAYA Test Sieve v2.04
+
+**Smart pre-filtering for prime testing**
+
+MAYA Test Sieve is a modular pre-sieve designed to reduce the number of candidates passed to expensive primality tests such as Miller–Rabin.
 
 ---
 
-## Overview
+## 🔬 Core Idea
 
-MAYA Prime Sieve is a pre-filter designed to reduce the number of candidates passed to computationally expensive primality tests such as Miller–Rabin.
+Instead of testing all odd numbers directly:
 
-The method is based on positional decomposition and is used as an optimization layer within a primality testing pipeline.
+odd numbers → Miller–Rabin
 
-This is not a standalone primality test.
+MAYA introduces a structured filtering pipeline:
 
----
-
-## Pipeline
-
-odd numbers
-→ Wheel30030
-→ MAYA (lookup)
-→ Miller–Rabin
+1. Odd filter
+2. Wheel30030 (2, 3, 5, 7, 11, 13)
+3. Partial wheel lookup (17 / 19)
+4. MAYA positional filter (residue-based projection)
+5. Miller–Rabin
 
 ---
 
-## Key Idea (v2.03)
+## 🚀 Results (10B numbers)
 
-Version 2.03 replaces runtime computation with a precomputed lookup.
+- **Numbers tested:** 10,000,000,000  
+- **Primes found:** 882,206,715  
+- **Validation:** ✔ identical across all methods  
 
-Previous form:
+### Performance
 
-pass(n) = Wheel(n) && Maya(n)
-
-## Current form:
-
-pass(n) = LOOKUP(index(n))
-
----
-
-## Decision cost:
-
-O(1) per number
+| Method | Time | Speed vs baseline |
+|--------|------|------------------|
+| Baseline (MR only) | 9010 s | — |
+| Rolling MAYA (reference) | 7963 s | **+11.62%** |
+| v2.04 compact | 14461 s | -60.50% |
+| v2.04b key | 13585 s | -50.78% |
 
 ---
 
-## Results
-## 1000M Test
+## 📉 Miller–Rabin Workload Reduction
 
-* ~77% reduction in Miller–Rabin calls
-* ~8% runtime improvement vs baseline
-* identical prime counts (no observed false negatives)
+All MAYA variants achieved:
 
-## Interpretation
+~77.05% reduction in MR calls
 
-* Reduction remains stable across the full range
-* Lookup removes most of the filter computation cost
-* Performance improves as scale increases
+This demonstrates:
+
+> Filtering quality is stable across implementations,  
+> but runtime performance depends on execution strategy.
 
 ---
 
-## Scaling
+## ⚙️ Key Insight
 
-Range         Result
-10M           ✔ faster
-100M          ✔ stable
-1000M         ✔ scalable
+There are two fundamentally different approaches:
 
----
+### 1. Rolling MAYA (v2.03 – reference)
+- Computes projection on-the-fly  
+- Lower overhead  
+- Best real-world performance  
 
-## Evolution
-
-## v1.00
-
-* ~77% MR reduction
-* small speed improvement (~1–2%)
-* limited by per-candidate computation cost
-
-## v2.02
-
-* improved rolling computation
-* still CPU-bound
-
-## v2.03
-
-* lookup-based filtering
-* reduced filter cost
-* improved scalability
+### 2. Lookup / Compact MAYA (v2.04)
+- Precomputed modular lookup  
+- O(1) decision per candidate  
+- Higher memory and modulo overhead  
 
 ---
 
-## Benchmark Data
+## 🧩 Original MAYA Principle
 
-Benchmark datasets (10M / 100M / 1000M) are included in the repository.
+MAYA does **not** rely on direct division.
 
-### Direct access:
+Instead, it uses:
 
-* [10M dataset](data/v2.03-c/10M/)
-* [100M dataset](data/v2.03-c/100M/)
-* [1000M dataset](data/v2.03-c/1000M/)
+- positional decomposition (base-20 inspired)  
+- projection coefficients  
+- residue matrices  
 
-Each dataset contains:
-
-* progress.csv – intermediate measurements
-* summary.csv – final results
-
-### Example files
-
-- [10M summary](data/v2.03-c/10M/maya_benchmark_2_03_10M_lookup_summary.csv)
-- [100M summary](data/v2.03-c/100M/maya_benchmark_2_03_100M_lookup_summary.csv)
-- [1000M summary](data/v2.03-c/1000M/maya_benchmark_2_03_1000M_lookup_summary.csv)
-
-All benchmark results can be independently verified using the provided datasets.
+This enables detection of composite numbers via structured arithmetic rather than repeated modulo division.
 
 ---
 
-## Current Limitation
+## 📊 Why v2.04 matters
 
-The current implementation requires:
+Even though v2.04 is slower:
 
-O(N) memory
-
-Example:
-
-- 100M candidates ≈ 1 GB
-
----
-
-## Next Steps (v2.04)
-
-Planned work:
-
-* modular lookup compression (n % M)
-* layer-aware filtering
-* node-based elimination
-* partial wheel reinforcement (17 / 19)
+- ✔ proves correctness of compact representation  
+- ✔ preserves identical filtering behavior  
+- ✔ validates modular / lookup-based approach  
+- ✔ separates **algorithmic idea vs implementation strategy**
 
 ---
 
-## Design Goals
+## 🔄 Next Steps
 
-* reduce runtime computation
-* move work to precomputation
-* preserve correctness
-* scale to large input ranges
-
----
-
-## Purpose
-
-Pre-filter layer for primality testing pipelines.
+- Hybrid pipeline (Rolling + selective lookup)  
+- Modular compression of lookup tables  
+- SIMD / vectorization  
+- Hardware-aware optimizations  
 
 ---
 
-## Disclaimer
+## 📁 Data
 
-This is not a primality test.
-It does not prove primality.
+Benchmark outputs:
 
----
-
-## Status
-
-Active development.
-Next version: v2.04
+- `maya_benchmark_2_04_10000M_progress.csv`
+- `maya_benchmark_2_04_10000M_summary.csv`
 
 ---
 
-## Citation
+## ⚠️ Note
 
-DOI: https://doi.org/10.5281/zenodo.19807084
+MAYA Test Sieve is a **pre-filter**, not a primality test.
 
----
-
-## Visualization
-
-![MAYA 1000M](docs/maya_1000M.png)
+Final correctness always depends on Miller–Rabin (or equivalent).
 
 ---
 
-## Author
+## 👤 Author
 
-David Hess
-© 2026 
-
+David Hess  
+2026
